@@ -22,67 +22,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var validFormats = map[string]string{
-	"layout":      time.Layout,
-	"ansic":       time.ANSIC,
-	"unixdate":    time.UnixDate,
-	"rubydate":    time.RubyDate,
-	"rfc822":      time.RFC822,
-	"rfc822z":     time.RFC822Z,
-	"rfc850":      time.RFC850,
-	"rfc1123":     time.RFC1123,
-	"rfc1123z":    time.RFC1123Z,
-	"rfc3339":     time.RFC3339,
-	"rfc3339nano": time.RFC3339Nano,
-	"kitchen":     time.Kitchen,
-	"stamp":       time.Stamp,
-	"stampmilli":  time.StampMilli,
-	"stampmicro":  time.StampMicro,
-	"stampnano":   time.StampNano,
-	"datetime":    time.DateTime,
-	"dateonly":    time.DateOnly,
-	"timeonly":    time.TimeOnly,
-}
-
-func argsFunc(cmd *cobra.Command, args []string) error {
-	if len(args) == 0 {
-		return nil
-	}
-	if len(args) > 1 {
-		return fmt.Errorf("too many arguments")
-	}
-	format := args[0]
-
-	if _, ok := validFormats[format]; !ok {
-		return fmt.Errorf("invalid format")
-	}
-
-	return nil
-}
-
 func runFunc(cmd *cobra.Command, args []string) {
-	format := "rfc3339"
-	if len(args) > 0 {
-		format = args[0]
-	}
-	fmt.Println(time.Now().Format(validFormats[format]))
+	fmt.Println(time.Now().Format(validFormats["rfc3339"]))
 }
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:     "timef [format]",
+	Use:     "timef",
 	Version: "v0.0.1",
-	Run:    runFunc,
-	Args:    argsFunc,
-	Short:   "Displays the current time",
-	Long: `Displays the current time. The default format is rfc3339.
-
-Format options: layout, ansic, unixdate, rubydate, rfc822, rfc822z, rfc850,
-rfc1123, rfc1123z, rfc3339, rfc3339nano, kitchen, stamp, stampmilli, stampmicro,
-stampnano, datetime, dateonly, timeonly.
-
-Examples and details: https://pkg.go.dev/time#pkg-constants
-`,
+	Run:     runFunc,
+	Args:    cobra.NoArgs,
+	Short:   "Displays the current time or sets a timer",
+	Long:    `Displays the current time or sets a timer. The default time format is rfc3339.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
