@@ -69,7 +69,6 @@ func formatRunFunc(cmd *cobra.Command, args []string) {
 	fmt.Println(time.Now().Format(validFormats[args[0]]))
 }
 
-// formatCmd represents the format command
 var formatCmd = &cobra.Command{
 	Use:     "format",
 	Aliases: []string{"f"},
