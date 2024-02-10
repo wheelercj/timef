@@ -16,62 +16,18 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-	"slices"
-	"strconv"
-	"strings"
-	"time"
-
 	"github.com/gen2brain/beeep"
-	"github.com/gosuri/uilive"
 	"github.com/spf13/cobra"
 )
-
-var validBeepUnits = []string{"s", "m", "h", "d"}
-
-const (
-	minuteSeconds = 60
-	hourSeconds   = 60 * 60
-	daySeconds    = 60 * 60 * 24
-	weekSeconds   = 60 * 60 * 24 * 7
-	monthSeconds  = 60 * 60 * 24 * 30
-	yearSeconds   = 60 * 60 * 24 * 365
-)
-
-func beepArgsFunc(cmd *cobra.Command, args []string) error {
-	if len(args) == 0 {
-		return fmt.Errorf("expected at least 1 argument")
-	}
-
-	for _, arg := range args {
-		lastLetter := string(arg[len(arg)-1])
-		if !slices.Contains(validBeepUnits, lastLetter) {
-			return fmt.Errorf(
-				"time duration `%s` does not end with a valid time unit",
-				arg,
-			)
-		}
-
-		numStr := arg[:len(arg)-1]
-		if _, err := strconv.ParseInt(numStr, 10, 64); err != nil {
-			return fmt.Errorf(
-				"time duration `%s` must be an integer followed by a unit",
-				arg,
-			)
-		}
-	}
-
-	return nil
-}
 
 func beepRunFunc(cmd *cobra.Command, args []string) error {
 	seconds := toSeconds(args)
 	sleepProgress(seconds)
-	return makeBeepSound()
+	return beeep.Beep(beeep.DefaultFreq, beeep.DefaultDuration)
 }
 
 var beepCmd = &cobra.Command{
-	Use:     "beep [duration]",
+	Use:     "beep duration",
 	Aliases: []string{"b"},
 	Short:   "Makes a beep sound after the chosen amount of time passes",
 	Long: `Makes a beep sound after the chosen amount of time passes.
@@ -84,84 +40,10 @@ Valid time units:
 	Example: `beep 2m 30s
 beep 1d
 beep 3h 15m 20s`,
-	Args: beepArgsFunc,
+	Args: timeArgsFunc,
 	RunE: beepRunFunc,
 }
 
 func init() {
 	rootCmd.AddCommand(beepCmd)
-}
-
-// MustParseInt converts a string to an integer, and panics if the conversion is not
-// possible.
-func MustParseInt(numStr string) int {
-	if num64, err := strconv.ParseInt(numStr, 10, 64); err == nil {
-		return int(num64)
-	} else {
-		panic(err)
-	}
-}
-
-// toSeconds converts strings of time durations like ["2m", "30s"] into an integer of
-// seconds.
-func toSeconds(tokens []string) int {
-	var seconds int
-	for _, token := range tokens {
-		lastLetter := string(token[len(token)-1])
-		num := MustParseInt(token[:len(token)-1])
-
-		switch lastLetter {
-		case "s":
-			seconds += num
-		case "m":
-			seconds += num * minuteSeconds
-		case "h":
-			seconds += num * hourSeconds
-		case "d":
-			seconds += num * daySeconds
-		}
-	}
-
-	return seconds
-}
-
-// toTimeStr converts an integer of seconds to a time string like "2m 30s".
-func toTimeStr(seconds int) string {
-	var tokens []string
-
-	if seconds > daySeconds {
-		tokens = append(tokens, fmt.Sprintf("%dd", seconds/daySeconds))
-		seconds %= daySeconds
-	}
-	if seconds > hourSeconds {
-		tokens = append(tokens, fmt.Sprintf("%dh", seconds/hourSeconds))
-		seconds %= hourSeconds
-	}
-	if seconds > minuteSeconds {
-		tokens = append(tokens, fmt.Sprintf("%dm", seconds/minuteSeconds))
-		seconds %= minuteSeconds
-	}
-	tokens = append(tokens, fmt.Sprintf("%ds", seconds))
-
-	return strings.Join(tokens, " ")
-}
-
-// sleepProgress sleeps for the chosen time while showing a countdown.
-func sleepProgress(seconds int) {
-	writer := uilive.New()
-	writer.Start()
-
-	for i := seconds; i > 0; i-- {
-		timeStr := toTimeStr(i)
-		fmt.Fprintf(writer, "%s remaining...\n", timeStr)
-		time.Sleep(time.Second)
-	}
-
-	fmt.Fprintln(writer, "Done")
-	writer.Stop()
-}
-
-// makeBeepSound makes a beep sound.
-func makeBeepSound() error {
-	return beeep.Beep(beeep.DefaultFreq, beeep.DefaultDuration)
 }
