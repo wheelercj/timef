@@ -29,8 +29,8 @@ func alertRunFunc(cmd *cobra.Command, args []string) error {
 var alertCmd = &cobra.Command{
 	Use:     "alert duration",
 	Aliases: []string{"a"},
-	Short:   "Shows an alert after the chosen amount of time passes",
-	Long: `Shows an alert after the chosen amount of time passes.
+	Short:   "Show an alert after the chosen amount of time passes",
+	Long: `Show an alert after the chosen amount of time passes.
 
 Valid time units:
   s - seconds

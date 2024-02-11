@@ -29,8 +29,8 @@ func beepRunFunc(cmd *cobra.Command, args []string) error {
 var beepCmd = &cobra.Command{
 	Use:     "beep duration",
 	Aliases: []string{"b"},
-	Short:   "Makes a beep sound after the chosen amount of time passes",
-	Long: `Makes a beep sound after the chosen amount of time passes.
+	Short:   "Make a beep sound after the chosen amount of time passes",
+	Long: `Make a beep sound after the chosen amount of time passes.
 
 Valid time units:
   s - seconds

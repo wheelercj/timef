@@ -42,8 +42,8 @@ func startRunFunc(cmd *cobra.Command, args []string) {
 var startCmd = &cobra.Command{
 	Use:     "start",
 	Aliases: []string{"s"},
-	Short:   "Starts a stopwatch",
-	Long: `Starts a stopwatch
+	Short:   "Start a stopwatch",
+	Long: `Start a stopwatch
 
 While the stopwatch is running, press space to pause, enter to lap, or escape to quit.`,
 	Args:    cobra.NoArgs,

@@ -32,8 +32,10 @@ var rootCmd = &cobra.Command{
 	Version: "0.0.2",
 	Run:     runFunc,
 	Args:    cobra.NoArgs,
-	Short:   "Displays the current time or sets a timer",
-	Long:    `Displays the current time or sets a timer. The default time format is rfc3339.`,
+	Short:   "Display the current time, set a timer, or start a stopwatch",
+	Long:    `Display the current time, set a timer, or start a stopwatch.
+
+The default time format is rfc3339.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

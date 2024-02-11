@@ -29,8 +29,8 @@ func notifyRunFunc(cmd *cobra.Command, args []string) error {
 var notifyCmd = &cobra.Command{
 	Use:     "notify duration",
 	Aliases: []string{"n"},
-	Short:   "Shows a notification after the chosen amount of time passes",
-	Long: `Shows a notification after the chosen amount of time passes.
+	Short:   "Show a notification after the chosen amount of time passes",
+	Long: `Show a notification after the chosen amount of time passes.
 
 Valid time units:
   s - seconds

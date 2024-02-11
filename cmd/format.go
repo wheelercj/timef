@@ -72,8 +72,8 @@ func formatRunFunc(cmd *cobra.Command, args []string) {
 var formatCmd = &cobra.Command{
 	Use:     "format",
 	Aliases: []string{"f"},
-	Short:   "Displays the current time in a different format",
-	Long: `Displays the current time in a different format. The default format is rfc3339.
+	Short:   "Display the current time in a different format",
+	Long: `Display the current time in a different format. The default format is rfc3339.
 
 	Format options: layout, ansic, unixdate, rubydate, rfc822, rfc822z, rfc850,
 	rfc1123, rfc1123z, rfc3339, rfc3339nano, kitchen, stamp, stampmilli, stampmicro,
