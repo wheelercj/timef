@@ -22,11 +22,12 @@ import (
 	"github.com/eiannone/keyboard"
 	"github.com/gosuri/uilive"
 	"github.com/spf13/cobra"
+	"golang.design/x/clipboard"
 )
 
-func startRunFunc(cmd *cobra.Command, args []string) {
+func startRunFunc(cmd *cobra.Command, args []string) error {
 	if err := keyboard.Open(); err != nil {
-		panic(err)
+		return err
 	}
 	defer func() {
 		_ = keyboard.Close()
@@ -36,7 +37,7 @@ func startRunFunc(cmd *cobra.Command, args []string) {
 	writer.Start()
 	defer writer.Stop()
 
-	runStopwatch(writer)
+	return runStopwatch(writer)
 }
 
 var startCmd = &cobra.Command{
@@ -46,15 +47,19 @@ var startCmd = &cobra.Command{
 	Long: `Start a stopwatch
 
 While the stopwatch is running, press space to pause, enter to lap, or escape to quit.`,
-	Args:    cobra.NoArgs,
-	Run:     startRunFunc,
+	Args: cobra.NoArgs,
+	RunE: startRunFunc,
 }
 
 func init() {
 	rootCmd.AddCommand(startCmd)
 }
 
-func runStopwatch(writer *uilive.Writer) {
+func runStopwatch(writer *uilive.Writer) error {
+	if err := clipboard.Init(); err != nil {
+		NoCopy = true
+	}
+
 	keyChan := NewKeyChan()
 	sleepChan := make(chan bool)
 
@@ -67,28 +72,39 @@ func runStopwatch(writer *uilive.Writer) {
 
 	i := 0
 	var isPaused bool
+	var timeStr string
 	for {
 		select {
 		case <-sleepChan:
 			if !isPaused {
-				fmt.Fprintf(writer, "%s\n", toTimeStr(i))
+				timeStr = toTimeStr(i)
+				fmt.Fprintf(writer, "%s\n", timeStr)
 				i++
 			}
 		case key := <-keyChan:
 			if key.Err != nil {
-				panic(key.Err)
+				return key.Err
 			}
 
 			switch key.Key {
 			case keyboard.KeyEsc:
 				// exit
-				return
+				if !NoCopy {
+					clipboard.Write(clipboard.FmtText, []byte(timeStr))
+				}
+				return nil
 			case keyboard.KeyEnter:
 				// lap
 				fmt.Println("")
+				if !NoCopy {
+					clipboard.Write(clipboard.FmtText, []byte(timeStr))
+				}
 			case keyboard.KeySpace:
 				// pause
 				isPaused = !isPaused
+				if !NoCopy {
+					clipboard.Write(clipboard.FmtText, []byte(timeStr))
+				}
 			}
 		}
 	}
