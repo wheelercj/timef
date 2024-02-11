@@ -3,6 +3,7 @@ module github.com/wheelercj/timef
 go 1.21.6
 
 require (
+	github.com/eiannone/keyboard v0.0.0-20220611211555-0d226195f203
 	github.com/gen2brain/beeep v0.0.0-20240112042604-c7bb2cd88fea
 	github.com/gosuri/uilive v0.0.4
 	github.com/spf13/cobra v1.8.0

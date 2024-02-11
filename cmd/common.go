@@ -22,6 +22,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/eiannone/keyboard"
 	"github.com/gosuri/uilive"
 	"github.com/spf13/cobra"
 )
@@ -130,4 +131,25 @@ func MustParseInt(numStr string) int {
 	} else {
 		panic(err)
 	}
+}
+
+func NewKeyChan() <-chan keyboard.KeyEvent {
+	keyEventChan := make(chan keyboard.KeyEvent)
+
+	go func(chan<- keyboard.KeyEvent) {
+		for {
+			k := keyboard.KeyEvent{}
+			k.Rune, k.Key, k.Err = keyboard.GetKey()
+
+			if k.Err != nil {
+				keyEventChan <- k
+				close(keyEventChan)
+				return
+			}
+
+			keyEventChan <- k
+		}
+	}(keyEventChan)
+
+	return keyEventChan
 }
