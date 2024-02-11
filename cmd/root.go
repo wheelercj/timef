@@ -29,7 +29,7 @@ func runFunc(cmd *cobra.Command, args []string) {
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "timef",
-	Version: "0.0.2",
+	Version: "0.0.3",
 	Run:     runFunc,
 	Args:    cobra.NoArgs,
 	Short:   "Display the current time, set a timer, or start a stopwatch",
