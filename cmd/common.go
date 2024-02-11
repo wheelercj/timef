@@ -133,6 +133,9 @@ func MustParseInt(numStr string) int {
 	}
 }
 
+// NewKeyChan returns a channel and concurrently sends keyboard events through it
+// indefinitely. NewKeyChan will only close the channel if there is an error getting a
+// key event.
 func NewKeyChan() <-chan keyboard.KeyEvent {
 	keyEventChan := make(chan keyboard.KeyEvent)
 
