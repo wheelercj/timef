@@ -22,7 +22,6 @@ import (
 	"github.com/eiannone/keyboard"
 	"github.com/gosuri/uilive"
 	"github.com/spf13/cobra"
-	"golang.design/x/clipboard"
 )
 
 func startRunFunc(cmd *cobra.Command, args []string) error {
@@ -56,10 +55,6 @@ func init() {
 }
 
 func runStopwatch(writer *uilive.Writer) error {
-	if err := clipboard.Init(); err != nil {
-		NoCopy = true
-	}
-
 	keyChan := NewKeyChan()
 	sleepChan := make(chan bool)
 
@@ -89,22 +84,13 @@ func runStopwatch(writer *uilive.Writer) error {
 			switch key.Key {
 			case keyboard.KeyEsc:
 				// exit
-				if !NoCopy {
-					clipboard.Write(clipboard.FmtText, []byte(timeStr))
-				}
 				return nil
 			case keyboard.KeyEnter:
 				// lap
 				fmt.Println("")
-				if !NoCopy {
-					clipboard.Write(clipboard.FmtText, []byte(timeStr))
-				}
 			case keyboard.KeySpace:
 				// pause
 				isPaused = !isPaused
-				if !NoCopy {
-					clipboard.Write(clipboard.FmtText, []byte(timeStr))
-				}
 			}
 		}
 	}

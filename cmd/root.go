@@ -20,27 +20,18 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"golang.design/x/clipboard"
 )
 
-var NoCopy bool
-
 func runFunc(cmd *cobra.Command, args []string) {
-	if err := clipboard.Init(); err != nil {
-		NoCopy = true
-	}
 
 	timeStr := time.Now().Format(validFormats["rfc3339"])
-	if !NoCopy {
-		clipboard.Write(clipboard.FmtText, []byte(timeStr))
-	}
 	fmt.Println(timeStr)
 }
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "timef",
-	Version: "0.0.4",
+	Version: "v0.0.5",
 	Run:     runFunc,
 	Args:    cobra.NoArgs,
 	Short:   "Display the current time, set a timer, or start a stopwatch",
@@ -56,13 +47,4 @@ func Execute() {
 	if err != nil {
 		os.Exit(1)
 	}
-}
-
-func init() {
-	rootCmd.Flags().BoolVar(
-		&NoCopy,
-		"noCopy",
-		false,
-		"Don't copy time output to the clipboard",
-	)
 }

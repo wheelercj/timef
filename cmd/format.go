@@ -20,7 +20,6 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"golang.design/x/clipboard"
 )
 
 var validFormats = map[string]string{
@@ -67,14 +66,7 @@ func formatArgsFunc(cmd *cobra.Command, args []string) error {
 }
 
 func formatRunFunc(cmd *cobra.Command, args []string) {
-	if err := clipboard.Init(); err != nil {
-		NoCopy = true
-	}
-
 	timeStr := time.Now().Format(validFormats[args[0]])
-	if !NoCopy {
-		clipboard.Write(clipboard.FmtText, []byte(timeStr))
-	}
 	fmt.Println(timeStr)
 }
 
