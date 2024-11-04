@@ -13,3 +13,5 @@ On some platforms, desktop notifications and alerts may be identical.
 ## download
 
 Run `go install github.com/wheelercj/timef@latest`
+
+Currently, the only Linux windowing system timef is compatible with is X11.
