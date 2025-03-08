@@ -23,15 +23,14 @@ import (
 )
 
 func runFunc(cmd *cobra.Command, args []string) {
-
 	timeStr := time.Now().Format(validFormats["rfc3339"])
-	fmt.Println(timeStr)
+	fmt.Print(timeStr)
 }
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "timef",
-	Version: "v0.0.5",
+	Version: "v0.0.6",
 	Run:     runFunc,
 	Args:    cobra.NoArgs,
 	Short:   "Display the current time, set a timer, or start a stopwatch",
